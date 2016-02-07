@@ -1,0 +1,82 @@
+---
+title: "Assignment 1"
+author: "Max Wagner"
+date: "February 7, 2015"
+output:
+  html_document:
+    highlight: espresso
+    theme: flatly
+  pdf_document: default
+---
+***
+
+####1. Dot product of u = [0.5, 0.5] and v = [3, -4]
+
+```{r}
+library(NISTunits)
+u <- c(.5, .5)
+v <- c(3, -4)
+uv <- u %*% v
+```
+
+0.5 * 3 + 0.5 * -4 = `r uv`
+
+####2. Lengths of u and v
+
+```{r}
+uu <- sqrt(u %*% u)
+vv <- sqrt(v %*% v)
+```
+
+u length = sqrt(u · u) = `r uu`
+
+v length = sqrt(v · v) = `r vv`
+
+####3. Linear combination 3u - 2v
+
+3u - 2v = `r (3 * u) - (2 * v)`
+
+####4. Angle between u and v
+
+uv / ||u|| * ||v|| = cos(x) = `r acos(uv / (uu * vv))` radians or `r NISTradianTOdeg(acos(uv / (uu * vv)))` degrees
+
+####5. Write a function that takes two variables (matrix A and constrait vector b) and solves with elimination
+
+```{r}
+Gelimination <- function(matrix, vector) {
+  matrix <- cbind(matrix, vector)
+  
+  if (matrix[1,1] == 0) {
+    if (matrix[3,1] != 0) {
+      third <- -1 * matrix[3,]
+      matrix[3,] <- matrix[1,]
+      matrix[1,] <- third
+    } else {
+      return ("Can't have a zero pivot here...")
+    }
+  }
+  
+  matrix[1,] <- matrix[1,] / matrix[1, 1]
+  for (i in 2:3) {
+    for (j in i:3) {
+      matrix[j, ] <- matrix[j, ] - matrix[i - 1, ] * matrix[j, i - 1]
+    }
+    matrix[i, ] <- matrix[i, ] / matrix[i, i]
+  }
+  
+  for (i in 3:2) {
+    for (j in i:2-1) {
+      matrix[j, ] <- matrix[j, ] - matrix[i, ] * matrix[j, i]
+    }
+  }
+  return(matrix[, 4])
+}
+
+matrix <- matrix(c(1,1,3,2,-1,5,-1,-2,4), nrow = 3, byrow = TRUE) # test case
+vector <- c(1,2,6)
+Gelimination(matrix, vector)
+
+matrix <- matrix(c(0,0,3,2,-1,5,-1,-2,4), nrow = 3, byrow = TRUE) # 0 pivot test case
+vector <- c(1,2,6)
+Gelimination(matrix, vector)
+```
