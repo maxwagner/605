@@ -1,0 +1,51 @@
+---
+title: "Assignment 2"
+author: "Max Wagner"
+date: "February 14, 2015"
+header-includes:
+   - \usepackage{bbm}
+output:
+  pdf_document: default
+  html_document:
+    highlight: espresso
+    theme: flatly
+---
+***
+
+####PS1.
+
+$$ A^{T}A \ne AA^{T} $$
+
+$$ (A^{T}A)^{T} \ne (AA^{T})^{T} $$
+
+$$ (A^{T})^{T}A^{T} \ne A^{T}(A^{T})^{T} $$
+
+They are symmetric, but not always equal. An exception to this rule is a diagonal matrix, or rather any matrix where the only non-zero elements are on the diagonal, essentially making:
+
+$$ A = A^{T} $$
+
+
+####PS2.
+
+Only works for 3x3 matrices.
+
+```{r}
+LUDecomp <- function(matrix) {
+  u <- matrix
+  inv1 <- matrix(c(1,0,0,-u[2,1],1,0,0,0,1), nrow = 3, byrow = TRUE)
+  u <- inv1 %*% u
+  
+  inv2 <- matrix(c(1,0,0,0,1,0,-u[3,1],0,1), nrow = 3, byrow = TRUE)
+  u <- inv2 %*% u
+  
+  inv3 <- matrix(c(1,0,0,0,-u[2,2],0,0,u[3,2],1), nrow = 3, byrow = TRUE)
+  u <- inv3 %*% u
+  
+  l <- solve(inv1) %*% solve(inv2) %*% solve(inv3) # not sure how to do L without solve...
+  
+  return(list(l,u))
+}
+
+matrix <- matrix(c(1,2,3,1,1,1,2,0,1), nrow = 3)
+LUDecomp(matrix)
+```
