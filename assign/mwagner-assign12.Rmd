@@ -1,0 +1,45 @@
+---
+title: "Assignment 12"
+author: "Max Wagner"
+date: "April 20, 2016"
+output:
+  pdf_document: default
+  html_document:
+    highlight: espresso
+    theme: flatly
+header-includes: \usepackage{bbm}
+---
+***
+
+```{r}
+library(boot)
+library(stats)
+library(ggplot2)
+
+df <- scan("auto-mpg.data")
+df <- data.frame(matrix(df, ncol = 5, byrow = TRUE))
+colnames(df) <- c("dp", "hp", "wt", "acc", "mpg")
+
+degree = 1:8
+cv.err5 <- c() # create empty array
+for(i in degree) { # loop to fill it up
+  glm.fit <- glm(mpg ~ poly(dp + hp + wt + acc, i), data = df)
+  cv.err5 <- c(cv.err5, cv.glm(df, glm.fit, K = 5)$delta[1])
+}
+qplot(degree, cv.err5, geom = "line")
+```
+
+It has the general shape of a "u" but is not perfect. I can try the same thing with more points to see how it looks.
+
+```{r}
+degree = 1:12
+cv.err5 <- c() # create empty array
+for(i in degree) { # loop to fill it up
+  glm.fit <- glm(mpg ~ poly(dp + hp + wt + acc, i), data = df)
+  cv.err5 <- c(cv.err5, cv.glm(df, glm.fit, K = 5)$delta[1])
+}
+
+qplot(degree, cv.err5, geom = "line")
+```
+
+There are still the spikes, but it appears a bit more "u" shaped. If smoothed, it would fit decently.

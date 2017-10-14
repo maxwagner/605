@@ -1,0 +1,59 @@
+---
+title: "Assignment 10"
+author: "Max Wagner"
+date: "April 4, 2016"
+output:
+  pdf_document: default
+  html_document:
+    highlight: espresso
+    theme: flatly
+header-includes: \usepackage{bbm}
+---
+***
+
+###PS1
+
+1.
+
+Form the A matrix, introduce decay, and form the the B matrix.
+
+```{r}
+A <- matrix(c(0, 1/2, 1/2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1/4, 1/4, 0, 0, 1/4, 1/4, 0, 0, 0, 0, 1/2, 1/2, 0, 0, 0, 1/2, 0, 1/2, 0, 0, 1/2, 1/2, 0, 0), nrow = 6)
+decay <- .85
+n <- max(ncol(A), nrow(A))
+B <- decay * A + (.15 / n)
+```
+
+2. Starting with the uniform rank vector r, and do some power iterations on B. I'll write a mini function to take care of that.
+
+```{r}
+r <- matrix(c(1/6, 1/6, 1/6, 1/6, 1/6, 1/6), nrow = 6)
+p <- 100
+
+powerIter <- function(A, B, power) {
+  if (power == 1)
+    return (A)
+  return(powerIter(A %*% B, B, power - 1))
+}
+
+powered <- powerIter(B, B, p) %*% r;powered
+```
+
+3. Eigen-decomp of B.
+
+```{r}
+eigen(B)$values # shows a eigenvalue of 1
+(powered / eigen(B)$vectors[,1]) * eigen(B)$vectors[,1] # scaling the vector
+```
+
+4. Using the igraph package.
+
+```{r,message=FALSE}
+library(igraph)
+relations <- data.frame(from = c(1,1,2,3,3,3,3,4,4,5,5,6), to = c(2,3,3,1,2,5,6,5,6,4,6,4), weight = c(1,1,1,1,1,1,1,1,1,1,1,1))
+pageranking <- graph.data.frame(relations, directed = TRUE)
+
+# and now scale it to check if it's right
+(powered / page.rank(pageranking)$vector) * page.rank(pageranking)$vector
+plot(pageranking) # plot it out to make sure it did match the example
+```

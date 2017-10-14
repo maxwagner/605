@@ -1,0 +1,66 @@
+---
+title: "Assignment 14"
+author: "Max Wagner"
+date: "May 10, 2016"
+output:
+  pdf_document: default
+  html_document:
+    highlight: espresso
+    theme: flatly
+header-includes: \usepackage{bbm}
+---
+***
+
+$$ f(x) = \frac{1}{1-x} $$
+
+Find the derivatives:
+
+$$ f'(x) = \frac{\frac{1}{1-x}}{1!}x $$
+
+$$ f''(x) = \frac{\frac{1}{1-x}}{2!}x^2 $$
+
+$$ f'''(x) = \frac{\frac{1}{1-x}}{3!}x^3 $$
+
+Do some plugging in to get:
+
+$$ 1 + \frac{1x}{1!} + \frac{2x^2}{2!} + \frac{6x^3}{3!} $$
+
+$$ 1 + x + x^2 + x^3 $$
+
+$$ \frac{1}{1-x} = \sum_{n=0}^{\infty} x^n $$
+
+***
+
+$$ f(x) = e^x $$
+
+Find the derivatives:
+
+$$ f'(x) = \frac{e^x}{1!} $$
+
+$$ f''(x) = \frac{e^x}{2!} $$
+
+$$ f'''(x) = \frac{e^x}{3!} $$
+
+Plugging in:
+
+$$ 1 + \frac{x}{1!} + \frac{x^2}{2!} + \frac{x^3}{3!} $$
+
+$$ e^x = \sum_{n=0}^{\infty} \frac{x^n}{n!} $$
+
+***
+
+$$ f(x) = ln(1+x) $$
+
+Find the derivatives:
+
+$$ f'(x) = \frac{ln(1+x)}{1!} $$
+
+$$ f''(x) = \frac{ln(1+x)}{2!} $$
+
+$$ f'''(x) = \frac{ln(1+x)}{3!} $$
+
+Plugging in:
+
+$$ x - \frac{x^2}{2} + \frac{x^3}{3} $$
+
+$$ ln(1+x) = \sum_{n=0}^{\infty} -1^{n+1} \frac{x^n}{n} $$

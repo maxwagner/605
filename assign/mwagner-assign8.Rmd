@@ -1,0 +1,54 @@
+---
+title: "Assignment 8"
+author: "Max Wagner"
+date: "March 20, 2016"
+header-includes:
+   - \usepackage{bbm}
+output:
+  pdf_document: default
+  html_document:
+    highlight: espresso
+    theme: flatly
+---
+***
+
+###PS1
+
+First I'll add some of the probabilities and nodes for the problem.
+
+```{r}
+train.prob <- 20/30
+train.ontime <- 0.9
+train.late <- .1
+bus.prob <- 10/30
+bus.ontime <- .5
+bus.late <- .5
+train.train.ontime <- train.prob * train.ontime
+train.train.late <- train.prob * train.late
+bus.bus.ontime <- bus.prob * bus.ontime
+bus.bus.late <- bus.prob * bus.late
+```
+
+And to answer the question...
+
+```{r}
+answer <- bus.bus.ontime / (bus.bus.ontime + train.train.ontime);answer
+```
+
+###PS2
+
+Let's add in some possibilities. It looks like this is the best way to use gRain, but it's kind of confusing.
+
+```{r}
+library(gRain)
+diff <- cptable(~diff, values = c(.7,.3), levels = c("yes", "no"))
+intell <- cptable(~intell, values = c(.2,.8), levels = c("high", "low"))
+grade <- cptable(~grade|diff:intell, values = c(.6,.4,.8,.2,.01,.90,.01,.99), levels = c("low", "high"))
+letter <- cptable(~letter|grade, values = c(.9,.1,.05,.95), levels = c("low", "high"))
+sat <- cptable(~sat|intell, values = c(.9,.1,.2,.8), levels = c("low", "high"))
+
+plist <- compileCPT(list(diff,intell,grade,letter,sat))
+grain <- setEvidence(grain(plist), nodes = "letter", state = "high")
+querygrain(grain, nodes = "diff", type = "marginal")
+```
+

@@ -1,0 +1,89 @@
+---
+title: "Assignment 9"
+author: "Max Wagner"
+date: "March 28, 2016"
+output:
+  pdf_document: default
+  html_document:
+    highlight: espresso
+    theme: flatly
+header-includes: \usepackage{bbm}
+---
+***
+
+###PS1
+
+1.
+
+A function to sample from the antiderivative of the distribution.
+
+```{r}
+invcdfgen <- function(x) {
+  if (x <= 1 && x >= 0) {
+    if (x <= .5) {
+      return (sqrt(2 * x))
+    } else {
+      return (2 - sqrt(2 * (1 - x)))
+    }
+  }
+}
+```
+
+2.
+
+And now a function for the second section using antiderivatives again
+
+```{r}
+invcdfgen2 <- function(x) {
+  if (x <= 1 && x >= 0) {
+    if (x <= .5) {
+      return (1 - sqrt(1 - 2 * x))
+    } else {
+      return (1 + sqrt(2 * x - 1))
+    }
+  }
+}
+```
+
+3.
+
+Sample from part 1:
+
+```{r, warning=FALSE}
+library(ggplot2)
+sample.p1 <- sapply(runif(100000), invcdfgen)
+qplot(sample.p1, geom = "histogram", bins = 100)
+```
+
+And a sample from part 2:
+
+```{r, warning=FALSE}
+sample.p2 <- sapply(runif(100000), invcdfgen2)
+qplot(sample.p2, geom = "histogram", bins = 100)
+```
+
+4.
+
+Just going to put n into a replicate function for this part:
+
+```{r}
+centralcalc <- function(n, PDF) {
+  qplot(replicate(n, mean(sapply(runif(1000), PDF))))
+}
+```
+
+And now testing it out with both functions:
+
+```{r, cache=TRUE}
+centralcalc(1000, invcdfgen)
+centralcalc(1000, invcdfgen2)
+```
+
+5.
+
+And trying with n = 20 to see how the CLT works. The graphs will not look perfect as the number of samples is fairly low.
+
+```{r}
+centralcalc(20, invcdfgen)
+centralcalc(20, invcdfgen2)
+```

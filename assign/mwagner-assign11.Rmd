@@ -1,0 +1,66 @@
+---
+title: "Assignment 11"
+author: "Max Wagner"
+date: "April 14, 2016"
+output:
+  pdf_document: default
+  html_document:
+    highlight: espresso
+    theme: flatly
+header-includes: \usepackage{bbm}
+---
+***
+
+```{r}
+age <- c(18, 23, 25, 35, 65, 54, 34, 56, 72, 19, 23, 42, 18, 39, 37)
+hr <- c(202, 186, 187, 180, 156, 169, 174, 172, 153, 199, 193,  174, 198, 183, 178)
+df <- data.frame(age, hr)
+summary(lm(hr ~ age, data = df))
+```
+
+The resulting equation is $210.0458 - .7977age$. The significance is significant and can be seen in the above as nearly 0. The plot can be seen below.
+
+```{r}
+library(ggplot2)
+ggplot(df, aes(x = age, y = hr)) + geom_point() + stat_smooth(method = lm)
+```
+
+***
+
+First lets do all 392:
+
+```{r}
+df <- scan("auto-mpg.data")
+df <- data.frame(matrix(df, ncol = 5, byrow = TRUE))
+colnames(df) <- c("dp", "hp", "wt", "acc", "mpg")
+summary(lm(mpg ~ dp + hp + wt + acc, data = df))
+```
+
+Horsepower is significant with a pvalue below .001, and weight is more significant with a pvalue of essentially 0. Displacement has a pvalue of .37 and acceleration has a pvalue of .85, which makes both variables insignificant to the model.
+
+The standard errors for all 392 points are: dp = .0067093, hp = .0165735, wt = .0008109, and accel = .1256012.
+
+$$ mpg = 45.2511397 - 0.0060009dp - 0.0436077dp - 0.0052805wt - 0.0231480acc $$
+
+***
+
+And now picking a random 40 sample from the data.
+
+```{r}
+df_samp <- df[sample(nrow(df), 40, replace = F),]
+summary(lm(mpg ~ dp + hp + wt + acc, data = df_samp))
+```
+
+The pvalues can be seen above, and 5 or so iterations I ran, none were ever significant. The standard errors can be read above as well, but are irrelavant as none of the variables are significant. The equation, although pointless, is below.
+
+$$ mpg = 42.205939 - .016186dp - .062396hp - .003724wt + .193301acc $$
+
+***
+
+If we view all 392 points, with only hp and wt included, the best solution can be found to be:
+
+```{r}
+summary(lm(mpg ~ hp + wt, data = df))
+```
+
+$$ mpg = 45.6402108 - .0473029hp - .0057942wt $$

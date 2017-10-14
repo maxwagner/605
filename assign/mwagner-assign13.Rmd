@@ -1,0 +1,81 @@
+---
+title: "Assignment 13"
+author: "Max Wagner"
+date: "May 3, 2016"
+output:
+  pdf_document: default
+  html_document:
+    highlight: espresso
+    theme: flatly
+header-includes: \usepackage{bbm}
+---
+***
+
+```{r}
+derivi <- function(x, lim) {
+  xp <- x + lim
+  return (((xp**3 + 2*(xp**2)) - (x**3 + 2*(x**2))) / lim)
+}
+
+derivi(3, .00005)
+```
+
+Let's check with the deriv which is $3x^2 + 4x$, plugging in 3 gives... `r 3*3**2 + 4*3`. Looks good.
+
+```{r}
+x <- seq(1,3,by = .00001)
+y <- 3*(x**2) + 4*x
+sum(y*.00001)
+```
+
+And now let's test this with some more plugging in... it gives... `r (3**3 + 2*(3**2)) - (1**3 + 2*(1**2)) `
+
+***
+
+Going to exclude the deriv and int symbols to make my latex life easier.
+
+1.
+
+$$ cos(x)sin(x) $$
+
+Sub in with power rule to get...
+
+$$ \frac{u^2}{2} $$
+
+and then sub back in to get...
+
+$$ \frac{sin^2 (x)}{2} $$
+
+2.
+
+$$ x^2 e^x $$
+
+$$ - 2xe^x $$
+
+$$ e^x $$
+
+plug in the integral to get...
+
+$$ xe^x - e^x $$
+
+$$ 2xe^x - 2e^x $$
+
+$$ x^2e^x - 2xe^x + 2e^x $$
+
+$$ x^2 e^x - 2xe^x + 2e^x $$
+
+3.
+
+$$ x cos(x) $$
+
+$$ cos(x) + (-sin(x)x) $$
+
+$$ cos(x) - x sin(x) $$
+
+4.
+
+$$ {e^{x}}^{4} $$
+
+$$ {e^{x}}^{4} * x^4 $$
+
+$$ 4x^3 {e^{x}}^{4} $$

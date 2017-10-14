@@ -1,0 +1,76 @@
+---
+title: "Assignment 7"
+author: "Max Wagner"
+date: "March 17, 2016"
+header-includes:
+   - \usepackage{bbm}
+output:
+  pdf_document: default
+  html_document:
+    highlight: espresso
+    theme: flatly
+---
+***
+
+Part I, base v custom
+
+```{r}
+numbers <- runif(100, 0, 10)
+
+# mean without using mean
+eValue <- function(vector) {
+  return(sum(vector) / length(vector))
+}
+
+# test if its the same thing
+eValue(numbers) == mean(numbers)
+print(c("custom:", eValue(numbers)))
+print(c("base:", mean(numbers)))
+
+# sd without using sd()
+std <- function(vector) {
+  return(sqrt(sum((vector - eValue(vector))^2) / (length(vector) - 1)))
+}
+
+# test if we get the same, if they are slightly different print the values
+std(numbers) == sd(numbers)
+print(c("custom:", std(numbers)))
+print(c("base:", sd(numbers)))
+```
+
+***
+
+Part II, rolling stats
+
+```{r}
+rolling <- function(vector, stats = list()){
+  if (length(stats) > 0) { # a stats list exists
+    oldn <- stats$n
+    stats$n <- stats$n + length(vector) # new n
+    stats$allmeans <- c(stats$allmeans, eValue(vector)) # list of means
+    stats$mean <- ((stats$mean * oldn) + (eValue(vector) * length(vector))) / stats$n # new mean from the old ones
+    stats$allsds <- c(stats$allsds, std(vector)) # list of sds
+    stats$sd <- sqrt(sum(stats$allsds) / length(stats$allsds)) # new sd from the list of sds
+  } else { # no stats list is input
+    stats$n <- length(vector)
+    stats$mean <- eValue(vector)
+    stats$sd <- std(vector)
+    stats$allmeans <- stats$mean
+    stats$allsds <- stats$sd
+  }
+  return(list(n = stats$n, mean = stats$mean, sd = stats$sd, 
+              allmeans = stats$allmeans, allsds = stats$allsds))
+}
+```
+
+Let's test with a few different samples
+
+```{r}
+vector <- runif(100, 0, 10)
+vector2 <- runif(50, 0, 10)
+vector3 <- runif(200, 0, 10)
+stats <- c()
+stats <- rolling(vector);stats
+stats <- rolling(vector2, stats);stats
+stats <- rolling(vector3, stats);stats
+```

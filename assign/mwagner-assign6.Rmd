@@ -42,3 +42,44 @@ pbirthday(50) # There's a base function that does this, weirdly enough
 
 ####PS2.
 
+For part 1 we are looking at just one word, so it's not too complicated.
+
+```{r}
+library("stringr")
+
+singleProb <- function(corpus){
+  corp <- iconv(corpus, "UTF-8", "ASCII", sub="?") # convert to ASCII in order to use gsub
+  corp <- gsub("[^[:alpha:]]", "", corp) # remove punctuation
+  corp <- tolower(corp) # make lowercase
+  corp <- corp[corp != ''] # remove first blank line
+  prob <- as.data.frame(table(corp)) # make it a data frame
+  prob$prob <- prob$Freq / sum(prob$Freq) # add a column to sort by
+  return(prob)
+}
+
+corpus <- scan('https://raw.githubusercontent.com/maxwagner/605/master/assign/assign6.sample.txt', character(0), quote=NULL, encoding = "UTF-8")
+probability <- singleProb(corpus)
+head(probability) # sample output
+```
+
+The two word one is a bit more complicated.
+
+```{r}
+doubleProb <- function(corpus, word1, word2) {
+  corp <- iconv(corpus, "UTF-8", "ASCII", sub="?") # convert to ASCII in order to use gsub
+  corp <- gsub("[^[:alpha:]]", "", corp) # remove punctuation
+  corp <- tolower(corp) # make lowercase
+  corp <- corp[corp != ''] # remove first blank line
+  
+  prob_frame <- data.frame(corp) # make a frame with just words in it
+  prob_frame$prev <- c(NA, corp[1:length(corp)-1]) # check whats previous to the word
+  prob_frame <- prob_frame[2:nrow(prob_frame),] # check whats after the word
+
+  prob_frame$match <- ifelse((prob_frame$corp == word1 & prob_frame$prev == word2) | (prob_frame$corp == word2 & prob_frame$prev == word1),1,0)
+  return(sum(prob_frame$match) / nrow(prob_frame))
+}
+
+corpus <- scan('https://raw.githubusercontent.com/maxwagner/605/master/assign/assign6.sample.txt', character(0), quote=NULL, encoding = "UTF-8")
+doubleProb(corpus, "to", "the") # sample output 1
+doubleProb(corpus, "to", "cat") # sample output 2
+```
